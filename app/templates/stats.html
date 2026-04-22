@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="card">
+    <h2>Stats for {{ url.short_code }}</h2>
+
+    <p><strong>Short URL:</strong>
+        <a href="{{ url_for('redirect_short', code=url.short_code, _external=True) }}" target="_blank">
+            {{ request.host_url }}s/{{ url.short_code }}
+        </a>
+    </p>
+
+    <p><strong>Original URL:</strong>
+        <a href="{{ url.original_url }}" target="_blank">{{ url.original_url }}</a>
+    </p>
+
+    <p><strong>Total Clicks:</strong> {{ url.click_count }}</p>
+
+    <p>
+        <strong>QR Code:</strong>
+        <a href="{{ url_for('qr', code=url.short_code) }}" target="_blank">View QR</a>
+    </p>
+</div>
+
+<h3>Click Log</h3>
+
+<div class="card">
+<table>
+    <tr>
+        <th>Timestamp (UTC)</th>
+        <th>Referrer</th>
+    </tr>
+
+    {% for c in clicks %}
+    <tr>
+        <td>{{ c.clicked_at }}</td>
+        <td>{{ c.referrer or "Direct / Unknown" }}</td>
+    </tr>
+    {% endfor %}
+</table>
+</div>
+
+{% endblock %}

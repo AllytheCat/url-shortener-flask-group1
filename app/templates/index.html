@@ -1,12 +1,73 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>URL Shortener</title>
-</head>
-<body>
-    <h1>URL Shortener</h1>
-    <p>Your Flask app is running.</p>
-</body>
-</html>
+{% extends "base.html" %}
+{% block content %}
+
+<!-- URL submission form -->
+<form method="POST" class="form">
+    <input type="url" name="long_url" placeholder="Enter long URL" required>
+    <input type="text" name="custom_code" placeholder="Optional custom short code">
+    <button type="submit">Shorten</button>
+</form>
+
+<!-- Error or success messages -->
+{% if error %}
+<p class="error">{{ error }}</p>
+{% endif %}
+
+{% if success %}
+<p class="success">{{ success }}</p>
+{% endif %}
+
+<!-- Display the newly created short URL -->
+{% if short_url %}
+<div class="card">
+    <p><strong>Your short URL:</strong>
+        <a href="{{ short_url }}" target="_blank">{{ short_url }}</a>
+    </p>
+
+    <!-- Copy button -->
+    <button onclick="navigator.clipboard.writeText('{{ short_url }}')">
+        Copy to Clipboard
+    </button>
+</div>
+{% endif %}
+
+<h2>Your URLs</h2>
+
+<!-- Dashboard table -->
+<div class="card">
+<table>
+    <tr>
+        <th>Short</th>
+        <th>Original</th>
+        <th>Clicks</th>
+        <th>Stats</th>
+        <th>QR</th>
+    </tr>
+
+    {% for u in urls %}
+    <tr>
+        <td>
+            <a href="{{ url_for('redirect_short', code=u.short_code) }}" target="_blank">
+                {{ request.host_url }}s/{{ u.short_code }}
+            </a>
+        </td>
+
+        <td class="long-url">
+            <a href="{{ u.original_url }}" target="_blank">{{ u.original_url }}</a>
+        </td>
+
+        <td>{{ u.click_count }}</td>
+
+        <td>
+            <a href="{{ url_for('stats', code=u.short_code) }}">View</a>
+        </td>
+
+        <td>
+            <a href="{{ url_for('qr', code=u.short_code) }}" target="_blank">QR</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+</div>
+
+{% endblock %}
