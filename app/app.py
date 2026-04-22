@@ -1,7 +1,6 @@
 """
 URL Shortener Web App
-COMP318 – Group Project
-Fully commented version for team understanding
+COMP318 – Final Project
 """
 
 import sqlite3
